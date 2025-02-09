@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f4f8;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .data-structure {
+            display: flex;
+            gap: 4px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .cell {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+        }
+        .index {
+            position: absolute;
+            top: -20px;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .controls {
+            margin: 20px 0;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 4px;
+        }
+        .control-group {
+            margin: 10px 0;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 4px;
+        }
+        button:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+        .error {
+            color: #dc2626;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        .success {
+            color: #16a34a;
+            margin-top: 8px;
+            font-size: 14px;
+        }
+        input {
+            padding: 6px;
+            margin: 4px;
+            width: 50px;
+        }
+        .highlight {
+            animation: pulse 1s;
+        }
+        @keyframes pulse {
+            0% { background-color: #93c5fd; }
+            100% { background-color: white; }
+        }
+        .section-title {
+            color: #1e40af;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Array vs List: Complete Feature Comparison</h1>
+        
+        <div>
+            <h2>Fixed-Size Array</h2>
+            <p>Arrays have a fixed size and support direct index access for both reading and writing.</p>
+            <div class="data-structure" id="array">
+                <div class="cell"><span class="index">0</span>5</div>
+                <div class="cell"><span class="index">1</span>2</div>
+                <div class="cell"><span class="index">2</span>8</div>
+                <div class="cell"><span class="index">3</span>1</div>
+                <div class="cell"><span class="index">4</span>9</div>
+            </div>
+            <div class="controls">
+                <div class="control-group">
+                    <h3 class="section-title">Element Retrieval</h3>
+                    <label>Get Index:</label>
+                    <input type="number" id="arrayGetIndex" min="0" max="4">
+                    <button onclick="getArrayElement()">Get Element</button>
+                    <div id="arrayGetResult" class="success"></div>
+                </div>
+                <div class="control-group">
+                    <h3 class="section-title">Update Element</h3>
+                    <label>Index:</label>
+                    <input type="number" id="arrayIndex" min="0" max="4">
+                    <label>Value:</label>
+                    <input type="number" id="arrayValue">
+                    <button onclick="updateArray()">Update Element</button>
+                </div>
+                <div id="arrayError" class="error"></div>
+            </div>
+        </div>
+
+        <div>
+            <h2>Dynamic List</h2>
+            <p>Lists combine array capabilities with dynamic sizing and additional features.</p>
+            <div class="data-structure" id="list"></div>
+            <div class="controls">
+                <div class="control-group">
+                    <h3 class="section-title">Array-like Operations</h3>
+                    <label>Get Index:</label>
+                    <input type="number" id="listGetIndex">
+                    <button onclick="getListElement()">Get Element</button>
+                    <div id="listGetResult" class="success"></div>
+                    
+                    <br>
+                    <label>Update Index:</label>
+                    <input type="number" id="listUpdateIndex">
+                    <label>Value:</label>
+                    <input type="number" id="listUpdateValue">
+                    <button onclick="updateListElement()">Update Element</button>
+                </div>
+                
+                <div class="control-group">
+                    <h3 class="section-title">List-specific Features</h3>
+                    <label>Value:</label>
+                    <input type="number" id="listValue">
+                    <button onclick="appendList()">Append (End)</button>
+                    <button onclick="removeList()">Remove Last</button>
+                    <br>
+                    <label>Index:</label>
+                    <input type="number" id="listInsertIndex">
+                    <label>Value:</label>
+                    <input type="number" id="listInsertValue">
+                    <button onclick="insertList()">Insert At Index</button>
+                    <br>
+                    <label>Remove Index:</label>
+                    <input type="number" id="listRemoveIndex">
+                    <button onclick="removeAtIndex()">Remove At Index</button>
+                </div>
+                <div id="listError" class="error"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Array operations
+        function getArrayElement() {
+            const index = parseInt(document.getElementById('arrayGetIndex').value);
+            const cells = document.querySelectorAll('#array .cell');
+            const result = document.getElementById('arrayGetResult');
+            const error = document.getElementById('arrayError');
+            
+            if (index < 0 || index >= cells.length) {
+                error.textContent = `Invalid index! Must be between 0 and ${cells.length - 1}`;
+                result.textContent = '';
+                return;
+            }
+            
+            error.textContent = '';
+            result.textContent = `Element at index ${index}: ${cells[index].textContent.replace(/[0-9]+$/, '')}`;
+            cells[index].classList.add('highlight');
+            setTimeout(() => cells[index].classList.remove('highlight'), 1000);
+        }
+
+        function updateArray() {
+            const index = parseInt(document.getElementById('arrayIndex').value);
+            const value = document.getElementById('arrayValue').value;
+            const error = document.getElementById('arrayError');
+            const cells = document.querySelectorAll('#array .cell');
+            
+            if (index < 0 || index >= cells.length) {
+                error.textContent = `Invalid index! Must be between 0 and ${cells.length - 1}`;
+                return;
+            }
+            
+            error.textContent = '';
+            cells[index].textContent = value;
+            cells[index].innerHTML += `<span class="index">${index}</span>`;
+            cells[index].classList.add('highlight');
+            setTimeout(() => cells[index].classList.remove('highlight'), 1000);
+        }
+
+        // List operations
+        let listItems = [3, 7, 4];
+        
+        function renderList() {
+            const listElement = document.getElementById('list');
+            listElement.innerHTML = '';
+            listItems.forEach((item, index) => {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                cell.innerHTML = `<span class="index">${index}</span>${item}`;
+                listElement.appendChild(cell);
+            });
+        }
+
+        function getListElement() {
+            const index = parseInt(document.getElementById('listGetIndex').value);
+            const result = document.getElementById('listGetResult');
+            const error = document.getElementById('listError');
+            
+            if (index < 0 || index >= listItems.length) {
+                error.textContent = `Invalid index! Must be between 0 and ${listItems.length - 1}`;
+                result.textContent = '';
+                return;
+            }
+            
+            error.textContent = '';
+            result.textContent = `Element at index ${index}: ${listItems[index]}`;
+            const cells = document.querySelectorAll('#list .cell');
+            cells[index].classList.add('highlight');
+            setTimeout(() => cells[index].classList.remove('highlight'), 1000);
+        }
+
+        function updateListElement() {
+            const index = parseInt(document.getElementById('listUpdateIndex').value);
+            const value = document.getElementById('listUpdateValue').value;
+            const error = document.getElementById('listError');
+            
+            if (index < 0 || index >= listItems.length) {
+                error.textContent = `Invalid index! Must be between 0 and ${listItems.length - 1}`;
+                return;
+            }
+            
+            error.textContent = '';
+            listItems[index] = parseInt(value);
+            renderList();
+            const cells = document.querySelectorAll('#list .cell');
+            cells[index].classList.add('highlight');
+        }
+
+        function appendList() {
+            const value = document.getElementById('listValue').value;
+            if (value) {
+                listItems.push(parseInt(value));
+                renderList();
+                const cells = document.querySelectorAll('#list .cell');
+                cells[cells.length - 1].classList.add('highlight');
+            }
+        }
+
+        function removeList() {
+            if (listItems.length > 0) {
+                listItems.pop();
+                renderList();
+            }
+        }
+
+        function insertList() {
+            const index = parseInt(document.getElementById('listInsertIndex').value);
+            const value = document.getElementById('listInsertValue').value;
+            const error = document.getElementById('listError');
+            
+            if (index < 0 || index > listItems.length) {
+                error.textContent = `Invalid index! Must be between 0 and ${listItems.length}`;
+                return;
+            }
+            
+            error.textContent = '';
+            listItems.splice(index, 0, parseInt(value));
+            renderList();
+            const cells = document.querySelectorAll('#list .cell');
+            cells[index].classList.add('highlight');
+        }
+
+        function removeAtIndex() {
+            const index = parseInt(document.getElementById('listRemoveIndex').value);
+            const error = document.getElementById('listError');
+            
+            if (index < 0 || index >= listItems.length) {
+                error.textContent = `Invalid index! Must be between 0 and ${listItems.length - 1}`;
+                return;
+            }
+            
+            error.textContent = '';
+            listItems.splice(index, 1);
+            renderList();
+        }
+
+        // Initial render
+        renderList();
+    </script>
+</body>
+</html>
