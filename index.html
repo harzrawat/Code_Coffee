@@ -186,7 +186,7 @@
             }
             
             error.textContent = '';
-            result.textContent = `Element at index ${index}: ${cells[index].textContent.replace(/[0-9]+$/, '')}`;
+            result.textContent = `Element at index ${index}: ${cells[index].textContent.replace(/^\d/, '')}`;
             cells[index].classList.add('highlight');
             setTimeout(() => cells[index].classList.remove('highlight'), 1000);
         }
